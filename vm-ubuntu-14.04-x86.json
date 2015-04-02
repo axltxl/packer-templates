@@ -1,0 +1,66 @@
+{
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'",
+      "override": {
+        "virtualbox-iso": {
+          "scripts": [
+            "scripts/ubuntu/base.sh",
+            "scripts/ubuntu/vagrant.sh",
+            "scripts/ubuntu/virtualbox.sh",
+            "scripts/ubuntu/cleanup.sh",
+            "scripts/zerodisk.sh"
+          ]
+        }
+      }
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "override": {
+        "virtualbox": {
+          "output": "ubuntu-14-04-x86-virtualbox.box"
+        }
+      }
+    }
+  ],
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "boot_command": [
+        "<esc><wait>",
+        "<esc><wait>",
+        "<enter><wait>",
+        "/install/vmlinuz ",
+        "initrd=/install/initrd.gz ",
+        "biosdevname=0 ",
+        "auto-install/enable=true ",
+        "debconf/priority=critical ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
+        "<enter>"
+      ],
+      "output_directory": "build",
+      "boot_wait": "10s",
+      "disk_size": 40960,
+      "guest_os_type": "Ubuntu_64",
+      "http_directory": "http"
+,      "iso_checksum": "80b1a915f42cc298855bd4e298f5bfbeb61d800e",
+      "iso_checksum_type": "sha1",
+      "iso_urls": [
+        "iso/ubuntu-14.04.2-server-i386.iso",
+        "http://releases.ubuntu.com/14.04/ubuntu-14.04.2-server-i386.iso"
+        ],
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "10000s",
+      "shutdown_command": "echo 'shutdown -P now' > /tmp/shutdown.sh; echo 'vagrant'|sudo -S sh '/tmp/shutdown.sh'",
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "512" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "1" ]
+      ]
+    }
+  ]
+}
