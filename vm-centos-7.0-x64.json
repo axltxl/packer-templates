@@ -1,4 +1,9 @@
 {
+  "variables": {
+    "image_version" : "",
+    "image_build_number": "",
+    "image_name_prefix": ""
+  },
   "provisioners": [
     {
       "type": "shell",
@@ -21,7 +26,7 @@
       "type": "vagrant",
       "override": {
         "virtualbox": {
-          "output": "centos-7-0-x64-virtualbox.box"
+          "output": "{{user `image_name_prefix`}}_centos-7.0-x64-virtualbox_{{user `image_version`}}.box"
         }
       }
     }
