@@ -45,7 +45,7 @@ def vm_build_image (template, version)
     mkdir(PACKER_OUTPUT_DIR)
   end
   if !$dry_run then
-    build_image(template, version, "vm")
+    build_image(template, version)
   else
     touch output_box
   end
