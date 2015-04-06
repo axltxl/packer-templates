@@ -74,12 +74,12 @@ end
 $vm_boxes.each do |box|
   json_file = vm_box2json(box, "vm")
   if box.match("ubuntu") then
-    file box => FileList.new("scripts/*.sh", "scripts/centos/*.sh", json_file) do
+    file box => FileList.new("scripts/*.sh", "scripts/ubuntu/*.sh", json_file) do
       vm_build_image(vm_box2json(box, "vm"), $image_version)
     end
   end
   if box.match("centos") then
-    file box => FileList.new("scripts/*.sh", "scripts/ubuntu/*.sh", json_file) do
+    file box => FileList.new("scripts/*.sh", "scripts/centos/*.sh", json_file) do
       vm_build_image(vm_box2json(box, "vm"), $image_version)
     end
   end
