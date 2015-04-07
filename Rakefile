@@ -19,8 +19,12 @@ $dry_run=ENV["dry_run"] || false
 
 # This will return the correspondent box file from its json template
 def vm_json2box(template)
-  tpl_vars = JSON.parse(File.read("#{File.dirname(template)}/vars.json"))
+  tpl_vars = vm_tpl_vars(template)
   return "#{PACKER_OUTPUT_DIR}/#{tpl_vars["image_name"]}_#{tpl_vars["image_version"]}-#{$image_revision}.box"
+end
+
+def vm_tpl_vars(template)
+  return JSON.parse(File.read("#{File.dirname(template)}/vars.json"))
 end
 
 # This will return the box file that come out of a json template
@@ -51,7 +55,11 @@ end
 $vm_boxes   = {}
 FileList.new("**/template.json").each do |vm|
   # Generate the list of vagrant boxes that would come out of each template
-  $vm_boxes[vm_json2box(vm)]  = vm
+  box_file = vm_json2box(vm)
+  $vm_boxes[box_file]  = vm
+
+  tpl_vars = vm_tpl_vars(vm)
+  task tpl_vars["image_name"] => box_file
 end
 
 # Each box is dependent on its json counterpart and also to its 
