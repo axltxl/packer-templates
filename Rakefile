@@ -1,11 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-require 'json'
-
-# Vagrant boxes are going to be put in here
-PACKER_OUTPUT_DIR = "dist"
-
 # Version control-related variables
 require File.join(File.dirname(__FILE__), "utils/git.rb")
 require File.join(File.dirname(__FILE__), "utils/templates.rb")
@@ -13,31 +8,16 @@ require File.join(File.dirname(__FILE__), "utils/templates.rb")
 # Dry run (noop)
 $dry_run=ENV["dry_run"] || false
 
-# This will return the correspondent box file from its json template
-def vm_json2box(template)
-  tpl_vars = vm_tpl_vars(template)
-  return "#{PACKER_OUTPUT_DIR}/#{tpl_vars["image_name"]}_#{tpl_vars["image_version"]}-#{$image_revision}.box"
-end
-
-def vm_tpl_vars(template)
-  return JSON.parse(File.read("#{File.dirname(template)}/vars.json"))
-end
-
-# This will return the box file that come out of a json template
-def vm_box2json(box_file)
-  return $vm_box[box_file]
-end
-
 # Build an image using Packer
 def build_image(template, revision)
-  sh %{ packer build -var-file=#{File.dirname(template)}/vars.json -var 'image_revision=#{revision}' -var 'image_output_directory=#{File.expand_path(PACKER_OUTPUT_DIR)}' #{template}}
+  sh %{ packer build -var-file=#{File.dirname(template)}/vars.json -var 'image_revision=#{revision}' -var 'image_output_directory=#{File.expand_path(Packer::OUTPUT_DIR)}' #{template}}
 end
 
 # Build a vagrant box
 def vm_build_image (template, revision)
-  output_box = vm_json2box(template)
-  unless File.directory?(PACKER_OUTPUT_DIR)
-    mkdir(PACKER_OUTPUT_DIR)
+  output_box = Packer.json2box(template)
+  unless File.directory?(Packer::OUTPUT_DIR)
+    mkdir(Packer::OUTPUT_DIR)
   end
   if !$dry_run then
     build_image(template, revision)
@@ -48,35 +28,34 @@ end
 
 # These are the expected box files from which file dependencies
 # are generated
-$vm_boxes   = {}
-FileList.new("**/template.json").each do |vm|
-  # Generate the list of vagrant boxes that would come out of each template
-  box_file = vm_json2box(vm)
-  $vm_boxes[box_file]  = vm
+$vm_boxes   = []
+Packer.templates.each do |image_name, tpl|
+  
+  box_file  = tpl[:box]
+  tpl_file  = tpl[:template]
 
-  tpl_vars = vm_tpl_vars(vm)
-  task tpl_vars["image_name"] => box_file
-end
+  task image_name => box_file
 
-# Each box is dependent on its json counterpart and also to its 
-# relevant provisioner shell scripts (depending on the OS)
-$vm_boxes.each do |box_file, json_file|
+  # Each box is dependent on its json counterpart and also to its 
+  # relevant provisioner shell scripts (depending on the OS)
   if box_file.match("ubuntu") then
-    file box_file => FileList.new("scripts/*.sh", "scripts/ubuntu/*.sh", json_file) do
-      vm_build_image(json_file, $image_revision)
-    end
+    os_scripts = "scripts/ubuntu/*.sh"
+  elsif box_file.match("centos") then
+    os_scripts = "scripts/centos/*.sh"
   end
-  if box_file.match("centos") then
-    file box_file => FileList.new("scripts/*.sh", "scripts/centos/*.sh", json_file) do
-      vm_build_image(json_file, $image_revision)
-    end
+
+  file box_file => FileList.new("scripts/*.sh", os_scripts, tpl_file) do
+    vm_build_image(tpl_file, Git::REVISION)
   end
+
+  #
+  $vm_boxes.push(box_file)
 end
 
 # Basic VM tasks
 namespace :vm do
   desc "Build images"
-  task :build => $vm_boxes.keys
+  task :build => $vm_boxes
 end
 
 # Default task
