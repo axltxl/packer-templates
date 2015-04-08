@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require 'json'
+
 # Version control-related variables
 require File.join(File.dirname(__FILE__), "utils/git.rb")
 require File.join(File.dirname(__FILE__), "utils/templates.rb")
@@ -14,16 +16,34 @@ def build_image(template, revision)
 end
 
 # Build a vagrant box
-def vm_build_image (template, revision)
-  output_box = Packer.json2box(template)
+def vm_build_image (image_name, template)
+  output_box = template[:box]
   unless File.directory?(Packer::OUTPUT_DIR)
     mkdir(Packer::OUTPUT_DIR)
   end
   if !$dry_run then
-    build_image(template, revision)
+    build_image(template, Git::REVISION)
   else
     touch output_box
   end
+
+  # Generate its json file
+  vagrant_json = {
+    "name" => image_name,
+    "versions" => [{
+      "version" => "#{template[:vars]['image_version']}-#{Git::REVISION}",
+      "providers" => [{
+        "name" => "virtualbox",
+        "url" => File.absolute_path(output_box),
+  #      "checksum_type": "sha1",
+  #      "checksum": "foo"
+      }]
+    }]
+  }
+  
+  json_file = "#{Packer::OUTPUT_DIR}/#{image_name}.json"
+  f = File.new(json_file, 'w')
+  f.puts JSON.dump(vagrant_json)
 end
 
 # These are the expected box files from which file dependencies
@@ -45,7 +65,7 @@ Packer.templates.each do |image_name, tpl|
   end
 
   file box_file => FileList.new("scripts/*.sh", os_scripts, tpl_file) do
-    vm_build_image(tpl_file, Git::REVISION)
+    vm_build_image(image_name, tpl)
   end
 
   #
