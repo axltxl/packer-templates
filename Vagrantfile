@@ -3,6 +3,8 @@
 
 # Configuration file location
 require File.join(File.dirname(__FILE__), "site.rb")
+require File.join(File.dirname(__FILE__), "utils/git.rb")
+require File.join(File.dirname(__FILE__), "utils/templates.rb")
  
 Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox"

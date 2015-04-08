@@ -7,12 +7,8 @@ require 'json'
 PACKER_OUTPUT_DIR = "dist"
 
 # Version control-related variables
-git_rev     = `git rev-parse --short HEAD`.chomp
-git_branch  = `git rev-parse --symbolic-full-name --abbrev-ref HEAD`.chomp.gsub('/', '-')
-
-# Image versioning details (these are inserted into Packer)
-$image_revision = "#{git_branch}-#{git_rev}"
-$image_name_prefix = "base"
+require File.join(File.dirname(__FILE__), "utils/git.rb")
+require File.join(File.dirname(__FILE__), "utils/templates.rb")
 
 # Dry run (noop)
 $dry_run=ENV["dry_run"] || false
