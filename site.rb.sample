@@ -1,0 +1,4 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$vm_box = "ubuntu-14.04-x64"
