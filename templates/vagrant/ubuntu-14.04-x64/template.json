@@ -27,7 +27,7 @@
       "type": "vagrant",
       "override": {
         "virtualbox": {
-          "output": "{{ user `image_output_directory` }}/{{user `image_name`}}_{{user `image_version`}}-{{user `image_revision`}}.box"
+          "output": "{{ user `image_output_directory` }}/{{user `image_name`}}_{{user `image_version`}}.box"
         }
       }
     }

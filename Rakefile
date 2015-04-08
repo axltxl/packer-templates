@@ -11,8 +11,10 @@ require File.join(File.dirname(__FILE__), "utils/templates.rb")
 $dry_run=ENV["dry_run"] || false
 
 # Build an image using Packer
-def build_image(template, revision)
-  sh %{ packer build -var-file=#{File.dirname(template)}/vars.json -var 'image_revision=#{revision}' -var 'image_output_directory=#{File.expand_path(Packer::OUTPUT_DIR)}' #{template}}
+def build_image(template)
+  tpl_file      = template[:template]
+  tpl_vars_file = "#{File.dirname(tpl_file)}/vars.json"
+  sh %{ packer build -var-file=#{tpl_vars_file} -var 'image_version=#{template[:vars]['image_version']}' -var 'image_output_directory=#{File.expand_path(Packer::OUTPUT_DIR)}' #{tpl_file}}
 end
 
 # Build a vagrant box
@@ -22,7 +24,7 @@ def vm_build_image (image_name, template)
     mkdir(Packer::OUTPUT_DIR)
   end
   if !$dry_run then
-    build_image(template, Git::REVISION)
+    build_image(template)
   else
     touch output_box
   end
@@ -31,7 +33,7 @@ def vm_build_image (image_name, template)
   vagrant_json = {
     "name" => image_name,
     "versions" => [{
-      "version" => "#{template[:vars]['image_version']}-#{Git::REVISION}",
+      "version" => "#{template[:vars]['image_version']}",
       "providers" => [{
         "name" => "virtualbox",
         "url" => File.absolute_path(output_box),

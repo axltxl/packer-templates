@@ -1,5 +1,6 @@
 packer_cache
-*.box
+dist
 output-*
 iso
 site.rb
+.vagrant

@@ -27,7 +27,7 @@
       "type": "vagrant",
       "override": {
         "virtualbox": {
-          "output": "{{ user `image_output_directory` }}/{{user `image_name`}}_{{user `image_version`}}-{{user `image_revision`}}.box"
+          "output": "{{ user `image_output_directory` }}/{{user `image_name`}}_{{user `image_version`}}.box"
         }
       }
     }
@@ -39,7 +39,7 @@
         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
       ],
       "boot_wait": "10s",
-      "disk_size": 40520,
+      "disk_size": 4096,
       "guest_os_type": "RedHat_64",
       "http_directory": "http",
       "iso_checksum": "154ba47b7a37e52e0100310c3aeb8f9d9daf4806",
