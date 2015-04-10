@@ -21,6 +21,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox"
   config.vm.box         = $vm_box
   config.vm.box_url     = box_url
+  config.vm.box_version = box_version
   config.vm.box_check_update = true
   config.vm.network :private_network, ip: "192.168.33.10"
   config.vm.provider :virtualbox do |vb|
