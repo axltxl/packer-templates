@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 require 'json'
-#require 'digest'
+require 'digest'
 
 # Version control-related variables
 require File.join(File.dirname(__FILE__), "utils/git.rb")
@@ -41,8 +41,8 @@ def vm_build_image (image_name, template)
           "providers" => [{
             "name" => "virtualbox",
             "url" => File.absolute_path(output_box),
-#            "checksum_type" => "sha1",
-#            "checksum" => Digest::SHA1.file(output_box).hexdigest
+            "checksum_type" => "sha1",
+            "checksum" => Digest::SHA1.file(output_box).hexdigest
           }]
         }]
       })
