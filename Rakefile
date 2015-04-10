@@ -2,9 +2,12 @@
 # vi: set ft=ruby :
 
 require 'json'
+#require 'digest'
 
 # Version control-related variables
 require File.join(File.dirname(__FILE__), "utils/git.rb")
+
+# packer-related utilities
 require File.join(File.dirname(__FILE__), "utils/templates.rb")
 
 # Dry run (noop)
@@ -29,23 +32,20 @@ def vm_build_image (image_name, template)
     touch output_box
   end
 
-  # Generate its json file
-  vagrant_json = {
-    "name" => image_name,
-    "versions" => [{
-      "version" => "#{template[:vars]['image_version']}",
-      "providers" => [{
-        "name" => "virtualbox",
-        "url" => File.absolute_path(output_box),
-  #      "checksum_type": "sha1",
-  #      "checksum": "foo"
-      }]
-    }]
-  }
-  
-  json_file = "#{Packer::OUTPUT_DIR}/#{image_name}.json"
-  f = File.new(json_file, 'w')
-  f.puts JSON.dump(vagrant_json)
+  # Generate the box's json file
+  File.new("#{Packer::OUTPUT_DIR}/#{image_name}.json", 'w')
+      .puts JSON.dump({
+        "name" => image_name,
+        "versions" => [{
+          "version" => "#{template[:vars]['image_version']}",
+          "providers" => [{
+            "name" => "virtualbox",
+            "url" => File.absolute_path(output_box),
+#            "checksum_type" => "sha1",
+#            "checksum" => Digest::SHA1.file(output_box).hexdigest
+          }]
+        }]
+      })
 end
 
 # These are the expected box files from which file dependencies
@@ -56,6 +56,8 @@ Packer.templates.each do |image_name, tpl|
   box_file  = tpl[:box]
   tpl_file  = tpl[:template]
 
+  # Per image, a task is generated which is dependant
+  # on its correspondent box file
   task image_name => box_file
 
   # Each box is dependent on its json counterpart and also to its 
