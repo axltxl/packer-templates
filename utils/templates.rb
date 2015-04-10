@@ -20,11 +20,6 @@ module Packer
     return JSON.parse(File.read("#{File.dirname(template)}/vars.json"))
   end
 
-  # This will return the box file that come out of a json template
-  def self.box2json(box_file)
-    return $vm_box[box_file]
-  end
-
   # This is the actual list of templates to
   # be used by both vagrant and rake
   @@templates = {}
