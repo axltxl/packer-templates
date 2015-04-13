@@ -49,7 +49,7 @@
       ],
       "output_directory": "build",
       "boot_wait": "10s",
-      "disk_size": 40960,
+      "disk_size": 4096,
       "guest_os_type": "Ubuntu_64",
       "http_directory": "http"
 ,      "iso_checksum": "3bfa6eac84d527380d0cc52db9092cde127f161e",
