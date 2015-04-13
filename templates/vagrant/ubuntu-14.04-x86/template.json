@@ -7,6 +7,16 @@
   },
   "provisioners": [
     {
+      "type": "file",
+      "source": "files/ubuntu/apt/20auto-upgrades",
+      "destination": "/tmp/20auto-upgrades"
+    },
+    {
+      "type": "file",
+      "source": "files/ubuntu/apt/50unattended-upgrades",
+      "destination": "/tmp/50unattended-upgrades"
+    },
+    {
       "type": "shell",
       "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'",
       "override": {
@@ -15,6 +25,7 @@
             "scripts/ubuntu/base.sh",
             "scripts/ubuntu/vagrant.sh",
             "scripts/ubuntu/virtualbox.sh",
+            "scripts/ubuntu/unattended-upgrades.sh",
             "scripts/ubuntu/cleanup.sh",
             "scripts/zerodisk.sh"
           ]
