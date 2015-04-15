@@ -17,14 +17,14 @@ This project has been crafted with CI and versioning in mind from the ground up,
 rake # This will build all vagrant boxes
 ```
 
-However, if you want to build a single box, you can do it this way.
+However, if you want to build a single box, you can do it this way:
 
 ```bash
 # this will build the template located at templates/<image_name>/template.json
 rake <box_name>
 ```
 
-This is another example. This time, using the `ubuntu-14.04-x64` box
+This is another example. This time, using the `ubuntu-14.04-x64` box:
 
 ```bash
 # this will build the template located at templates/ubuntu-14.04-x64/template.json
@@ -37,7 +37,7 @@ These are the available boxes:
 * `ubuntu-14.04-x64`
 * `centos-7.0-x64`
 
-Once the build is done, Vagrant boxes will be located at  the `dist` directory along its correspondent *box metadata* file
+Once the build is done, Vagrant boxes will be located at  the `dist` directory along with its correspondent *box metadata* file:
 
 ```bash
 rake centos-7.0-x64
@@ -56,7 +56,7 @@ OK, so you have well-built your boxes with `packer` and now you want to test the
 cp site.rb.sample site.rb
 ```
 
-Once you're done with your configuration file, you can fire up your vagrant box
+Once you're done with your configuration file, you can fire up your vagrant box.
 
 ```bash
 vagrant up
