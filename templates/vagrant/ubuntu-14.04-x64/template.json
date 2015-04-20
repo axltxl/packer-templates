@@ -7,6 +7,16 @@
   },
   "provisioners": [
     {
+      "type": "file",
+      "source": "files/ubuntu/apt/20auto-upgrades",
+      "destination": "/tmp/20auto-upgrades"
+    },
+    {
+      "type": "file",
+      "source": "files/ubuntu/apt/50unattended-upgrades",
+      "destination": "/tmp/50unattended-upgrades"
+    },
+    {
       "type": "shell",
       "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'",
       "override": {
@@ -15,6 +25,7 @@
             "scripts/ubuntu/base.sh",
             "scripts/ubuntu/vagrant.sh",
             "scripts/ubuntu/virtualbox.sh",
+            "scripts/ubuntu/unattended-upgrades.sh",
             "scripts/ubuntu/cleanup.sh",
             "scripts/zerodisk.sh"
           ]
@@ -49,7 +60,7 @@
       ],
       "output_directory": "build",
       "boot_wait": "10s",
-      "disk_size": 40960,
+      "disk_size": 4096,
       "guest_os_type": "Ubuntu_64",
       "http_directory": "http"
 ,      "iso_checksum": "3bfa6eac84d527380d0cc52db9092cde127f161e",
