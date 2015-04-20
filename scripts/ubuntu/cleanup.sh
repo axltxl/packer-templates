@@ -1,3 +1,6 @@
+#
+# Purge all unnecessary packages
+#
 apt-get -y autoremove
 apt-get -y clean
 
