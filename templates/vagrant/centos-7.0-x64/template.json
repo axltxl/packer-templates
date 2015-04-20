@@ -7,6 +7,11 @@
   },
   "provisioners": [
     {
+      "type": "file",
+      "source": "files/centos/yum-cron.conf",
+      "destination": "/tmp/yum-cron.conf"
+    },
+    {
       "type": "shell",
       "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'",
       "override": {
@@ -15,6 +20,7 @@
             "scripts/centos/base.sh",
             "scripts/centos/vagrant.sh",
             "scripts/centos/virtualbox.sh",
+            "scripts/centos/security-upgrades.sh",
             "scripts/centos/cleanup.sh",
             "scripts/zerodisk.sh"
           ]
