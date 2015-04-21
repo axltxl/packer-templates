@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Upgrade all packages
 #

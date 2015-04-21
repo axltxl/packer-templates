@@ -1,3 +1,4 @@
+#!/bin/bash
 APT_DIR=/etc/apt/apt.conf.d/
 
 #

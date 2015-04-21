@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Purge all unnecessary packages
 #
