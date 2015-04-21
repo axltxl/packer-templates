@@ -1,3 +1,4 @@
+#!/bin/bash
 VBOX_VERSION=$(cat /home/vagrant/.vbox_version)
 
 # Build tools for virtualbox guest aditions
